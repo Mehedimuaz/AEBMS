@@ -22,4 +22,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('storeUserData', 'ConsumptionController@store');
 Route::get('getUserData', 'ConsumptionController@retrieve');
+Route::get('getUserStat/{date}/{user_id}', 'ConsumptionController@retrieveStat');
+Route::get('getUserStatDate/{date}/{user_id}', 'ConsumptionController@retrieveStatDate');
+Route::get('getUserSumDate/{user_id}', 'ConsumptionController@retrieveStatSum');
 Route::get('/', 'ConsumptionController@index');
