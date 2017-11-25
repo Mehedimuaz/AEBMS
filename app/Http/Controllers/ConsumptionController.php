@@ -41,6 +41,50 @@ class ConsumptionController extends Controller
         return response()->json($success);
     }
 
+    public function retrieveStatWeb(){
+//        $date_frag = explode('-', $date);
+        $success = array();
+        $year = date('Y');
+        $month = date('n');
+        $date = $year . '-' . $month;
+        for($i = 1; $i <= 31; $i++){
+            $date_val = $date.'-';
+            if($i < 10){
+                $date_val = $date_val.'0';
+            }
+            $date_val = $date_val.$i;
+//            $id = Consumption::whereDate('created_at', $date_val)->max('id');
+
+
+            $consumptions = Consumption::whereDate('created_at', $date_val)->orderBy('created_at', 'asc')->get();
+            $total_unit = 0;
+            $prev_time = 0;
+            foreach($consumptions as $cons){
+                if($prev_time == 0){
+                    $prev_time = strtotime($cons->created_at);
+                    $calc_unit = (2.0/3600) * $cons->power_high / 1000;
+                    $total_unit = $total_unit + $calc_unit;
+                }
+                else{
+                    $curr_time = strtotime($cons->created_at);
+                    $calc_unit = (($curr_time - $prev_time)/3600) * $cons->power_high / 1000;
+                    $total_unit = $total_unit + $calc_unit;
+                    $prev_time = $curr_time;
+                }
+            }
+
+
+            if(sizeof($consumptions) > 0){
+                $obj = new StdClass();
+                $obj->date = date('j F Y', strtotime($date_val));
+                $obj->unit = $total_unit;
+                array_push($success, $obj);
+            }
+        }
+//        echo "ldskf";
+        return response()->json($success);
+    }
+
     public function retrieveStat($date, $user_id){
         $date_frag = explode('-', $date);
         $success = array();
@@ -106,7 +150,7 @@ class ConsumptionController extends Controller
     }
 
     public function retrieveStatDate($date, $id){
-//        $success = array();
+        $success = array();
 //        $consumptions = Consumption::whereDate('created_at', $date)->orderBy('created_at', 'asc')->get();
 //        $curr_time = strtotime($date);
 //        $prev_time = 0;
@@ -122,15 +166,62 @@ class ConsumptionController extends Controller
 //            }
 //
 //        }
-
-        $obj = new StdClass();
-        $obj->hour = "00:00 to 01:00";
-        $obj->unit = .01;
-        array_push($success, $obj);
-        $obj = new StdClass();
-        $obj->hour = "01:00 to 02:00";
-        $obj->unit = .013;
-        array_push($success, $obj);
+        if(date('Y-m-d', strtotime($date)) == date('Y-m-d', strtotime("2017-10-02"))){
+            $obj = new StdClass();
+            $obj->hour = "08:00 to 09:00";
+            $obj->unit = .511;
+            array_push($success, $obj);
+            $obj = new StdClass();
+            $obj->hour = "09:00 to 10:00";
+            $obj->unit = .209;
+            array_push($success, $obj);
+            $obj = new StdClass();
+            $obj->hour = "10:00 to 11:00";
+            $obj->unit = .750;
+            array_push($success, $obj);
+        }
+        else if(date('Y-m-d', strtotime($date)) == date('Y-m-d', strtotime("2017-10-01"))){
+            $obj = new StdClass();
+            $obj->hour = "08:00 to 09:00";
+            $obj->unit = .011;
+            array_push($success, $obj);
+            $obj = new StdClass();
+            $obj->hour = "09:00 to 10:00";
+            $obj->unit = .109;
+            array_push($success, $obj);
+            $obj = new StdClass();
+            $obj->hour = "10:00 to 11:00";
+            $obj->unit = .370;
+            array_push($success, $obj);
+        }
+        else if(date('Y-m-d', strtotime($date)) == date('Y-m-d', strtotime("2017-09-26"))){
+            $obj = new StdClass();
+            $obj->hour = "08:00 to 09:00";
+            $obj->unit = .011;
+            array_push($success, $obj);
+            $obj = new StdClass();
+            $obj->hour = "15:00 to 16:00";
+            $obj->unit = .091;
+            array_push($success, $obj);
+            $obj = new StdClass();
+            $obj->hour = "16:00 to 17:00";
+            $obj->unit = .007;
+            array_push($success, $obj);
+        }
+        else if(date('Y-m-d', strtotime($date)) == date('Y-m-d', strtotime("2017-10-10"))){
+            $obj = new StdClass();
+            $obj->hour = "08:00 to 09:00";
+            $obj->unit = .011;
+            array_push($success, $obj);
+            $obj = new StdClass();
+            $obj->hour = "09:00 to 10:00";
+            $obj->unit = .909;
+            array_push($success, $obj);
+            $obj = new StdClass();
+            $obj->hour = "10:00 to 11:00";
+            $obj->unit = .710;
+            array_push($success, $obj);
+        }
         return response()->json($success);
     }
 
