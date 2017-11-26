@@ -5,16 +5,23 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">Dashboard</div>
+                <div class="panel-heading">Consumption of this month</div>
 
                 <div class="panel-body">
-                    @if (session('status'))
-                        <div class="alert alert-success">
-                            {{ session('status') }}
-                        </div>
-                    @endif
 
-                    You are logged in!
+
+                    <table width="100%" border="1px">
+                        <tr>
+                            <td>Date</td>
+                            <td>Consumption</td>
+                        </tr>
+                        @foreach($success as $data)
+                            <tr>
+                                <td>{{$data->date}}</td>
+                                <td>{{$data->unit}}</td>
+                            </tr>
+                        @endforeach
+                    </table>
                 </div>
             </div>
         </div>

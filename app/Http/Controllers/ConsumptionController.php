@@ -31,7 +31,7 @@ class ConsumptionController extends Controller
         }
         $success = array();
         $result = new StdClass();
-        $result->mobile = '01988631968';
+        $result->mobile = '01852272760';
         $result->unit = $total_unit;
         array_push($success, $result);
         $result = new StdClass();
@@ -82,7 +82,9 @@ class ConsumptionController extends Controller
             }
         }
 //        echo "ldskf";
-        return response()->json($success);
+        return View::make('home', compact('success'));
+//        return response()->json($success);
+//        return $success;
     }
 
     public function retrieveStat($date, $user_id){
@@ -222,6 +224,16 @@ class ConsumptionController extends Controller
             $obj->unit = .710;
             array_push($success, $obj);
         }
+        else if(date('Y-m-d', strtotime($date)) == date('Y-m-d', strtotime("2017-11-26"))){
+            $obj = new StdClass();
+            $obj->hour = "11:00 to 12:00";
+            $obj->unit = .113;
+            array_push($success, $obj);
+            $obj = new StdClass();
+            $obj->hour = "12:00 to 13:00";
+            $obj->unit = .036;
+            array_push($success, $obj);
+        }
         return response()->json($success);
     }
 
@@ -283,7 +295,7 @@ class ConsumptionController extends Controller
     public function index(){
 //        $consumpiton = Consumption::max('id');
 //        return $consumpiton;
-        $consumptions = Consumption::all();
-        return View::make('consumption', compact('consumptions'));
+        $consumptions = Consumption::orderBy('id', 'desc')->get();
+        return View::make('home-admin', compact('consumptions'));
     }
 }
